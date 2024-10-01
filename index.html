@@ -112,7 +112,7 @@
         .attr("class", "legend")
         .attr("transform", `translate(${width + 20}, 10)`); // Adjust legend position
 
-      series.forEach((s, i) => {
+      series.forEach((s, i) =>  {
         const legendItem = legend.append("g")
           .attr("transform", `translate(0, ${i * 20})`);  // Adjust vertical spacing
 
