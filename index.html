@@ -3,38 +3,63 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Multiline Chart</title>
+  <title>Assignment 2</title>
   <style>
     .line {
       fill: none;
       stroke-width: 2px;
     }
+    table {
+      font-family: Arial, sans-serif;
+      border-collapse: collapse;
+      margin-left: 20px;
+      width: 75%;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 4px; 
+      font-size: 90%; 
+    }
+    th {
+      background-color: #f2f2f2;
+    }
   </style>
 </head>
 <body>
+
+  <div style="display: flex;">
+   
+    <div id="chart"></div>
+    
+    
+    <div id="table"></div>
+  </div>
   
   <script src="https://d3js.org/d3.v7.min.js"></script>
   <script>
-    // Set margins and dimensions
-    const margin = { top: 50, right: 200, bottom: 40, left: 80 };
+  
+    const margin = { top: 50, right: 200, bottom: 40, left: 50 };
     const width = 900 - margin.left - margin.right;
     const height = 250 - margin.top - margin.bottom;
     
-    const svg = d3.select("body").append("svg")
+    const svg = d3.select("#chart").append("svg")
       .attr("width", width + margin.left + margin.right)
       .attr("height", height + margin.top + margin.bottom)
+      .attr("viewBox", "0 0 1000px 800px")  // Set the viewbox to (0, 0, 1000, 800)
       .append("g")
       .attr("transform", `translate(${margin.left}, ${margin.top})`);
     
-    d3.csv("scripts/data_sample_modified.csv").then(function(data) {
+    d3.csv("data_sample_modified.csv").then(function(data) {
       data.forEach(function(d) {
         d.date = d3.timeParse("%m/%d/%y")(d.date);  
         d.EstimatedCost = +d.EstimatedCost;
         d.ActualCost = +d.ActualCost;
         d.SoldPrice = +d.SoldPrice;
         d.MarginOfProfit = +d.MarginOfProfit;  
+        d.StorageCost = +d.StorageCost;
+        d.RawMaterial=+d.RawMaterial;
+        d.Workmanship=+d.Workmanship;
       });
-    
       // Define X and Y scales
       const x = d3.scaleTime()
         .domain(d3.extent(data, d => d.date))  
@@ -77,7 +102,7 @@
           .attr("stroke", color(i)) 
           .attr("stroke-width", 2)
           .attr("fill", "none");
-
+      
       svg.selectAll(`.dot-${s.key}`)
       .data(data)
       .enter().append("circle")
@@ -100,12 +125,6 @@
         tooltip.style("display", "none");
       });
   });
-    
-      // Add transitions to lines
-      svg.selectAll(".line")
-        .transition()
-        .duration(2000)
-        .attr("stroke-width", 3);
     
       // Add legend
       const legend = svg.append("g")
@@ -131,6 +150,44 @@
           .text(s.name)
           .style("alignment-baseline", "middle");
       });
+
+      // Create the data table
+      const columns = ['date', 'EstimatedCost', 'ActualCost', 'SoldPrice', 'MarginOfProfit','StorageCost','Workmanship','RawMaterial'];
+
+      const table = d3.select("#table").append("table")
+        .attr("border", 1)
+        .style("border-collapse", "collapse");
+
+      const thead = table.append("thead").append("tr");
+      const tbody = table.append("tbody");
+
+      // Append table headers
+      thead.selectAll("th")
+        .data(columns)
+        .enter()
+        .append("th")
+        .text(d => d)
+        .style("padding", "1px")
+        .style("background-color", "#f2f2f2")
+        .style("font-size", "75%"); 
+
+      // Append data rows
+      const rows = tbody.selectAll("tr")
+        .data(data)
+        .enter()
+        .append("tr")
+        .style("font-size", "80%"); 
+
+      // Append data cells to each row
+      rows.selectAll("td")
+        .data(d => columns.map(col => d[col])) 
+        .enter()
+        .append("td")
+        .text(d => d instanceof Date ? d3.timeFormat("%m/%d/%Y")(d) : d)
+        .style("padding", "4px")
+        .style("border", "1px solid #ddd")
+        .style("font-size", "90%"); 
+
     });
    
   </script>
