@@ -35,21 +35,20 @@
     <div id="table"></div>
   </div>
   
-  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script src="./d3.v7.js"></script>
   <script>
   
     const margin = { top: 50, right: 200, bottom: 40, left: 50 };
-    const width = 900 - margin.left - margin.right;
-    const height = 250 - margin.top - margin.bottom;
+    const width = 800 - margin.left - margin.right;
+    const height = 350 - margin.top - margin.bottom;
     
     const svg = d3.select("#chart").append("svg")
       .attr("width", width + margin.left + margin.right)
       .attr("height", height + margin.top + margin.bottom)
-      .attr("viewBox", "0 0 1000px 800px")  // Set the viewbox to (0, 0, 1000, 800)
       .append("g")
       .attr("transform", `translate(${margin.left}, ${margin.top})`);
     
-    d3.csv("data_sample_modified.csv").then(function(data) {
+    d3.csv("./data_sample_modified.csv").then(function(data) {
       data.forEach(function(d) {
         d.date = d3.timeParse("%m/%d/%y")(d.date);  
         d.EstimatedCost = +d.EstimatedCost;
@@ -129,11 +128,11 @@
       // Add legend
       const legend = svg.append("g")
         .attr("class", "legend")
-        .attr("transform", `translate(${width + 20}, 10)`); // Adjust legend position
+        .attr("transform", `translate(${width + 20}, 10)`); 
 
       series.forEach((s, i) =>  {
         const legendItem = legend.append("g")
-          .attr("transform", `translate(0, ${i * 20})`);  // Adjust vertical spacing
+          .attr("transform", `translate(0, ${i * 20})`); 
 
         // Add colored box
         legendItem.append("rect")
@@ -145,7 +144,7 @@
 
         // Add text label
         legendItem.append("text")
-          .attr("x", 20)  // Position text to the right of the box
+          .attr("x", 20) 
           .attr("y", 10)
           .text(s.name)
           .style("alignment-baseline", "middle");
@@ -169,14 +168,14 @@
         .text(d => d)
         .style("padding", "1px")
         .style("background-color", "#f2f2f2")
-        .style("font-size", "75%"); 
+        .style("font-size", "65%"); 
 
       // Append data rows
       const rows = tbody.selectAll("tr")
         .data(data)
         .enter()
         .append("tr")
-        .style("font-size", "80%"); 
+        .style("font-size", "65%"); 
 
       // Append data cells to each row
       rows.selectAll("td")
